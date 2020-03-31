@@ -2,7 +2,10 @@
 
 Application developed with Node.js (back-end), React (front-end) and React Native (mobile) during the Week Omnistack 11.0 provided by RocketSeat.
 
-![logo1](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/imgsite.PNG "logo1") ![logo1](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/imgapp.jpg "logo2")  
+<p float="left">
+  <img src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/imgsite.PNG" width="100" />
+  <img src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/imgapp.jpg" width="100" /> 
+</p>
 
 
 
