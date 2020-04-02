@@ -183,5 +183,195 @@ Importing the `knex` and connecting the database.<br/>
 Checking if the database used is the development database or the test database.<br/>
 In the end, exporting the connection.
 
+## Controllers folder
+
+### NgoController
+
+```
+const generateUniqueId =  require('../utils/generateUniqueId');
+const connection =  require('../database/connection');
+
+module.exports  = {
+	async  index(request, response) {
+	const ongs =  await  connection('ongs').select('*');
+
+	return response.json(ongs);
+},
+
+	async  create(request, response) {
+
+		const { name, email, whatsapp, city, uf } = request.body;
+		
+		const id =  generateUniqueId();
+
+		await  connection('ongs').insert({
+			id,
+			name,
+			email,
+			whatsapp,
+			city,
+			uf,
+		})
+
+		return response.json({ id });
+	}
+};
+```
+
+Import the unique ID of the NGO and the connection to the database.
+Exports the function that returns the creation of the NGOs.
+Async is used to wait for the connection with the NGO table and thus return all data.
+Then, async is used to wait for the connection to the table to insert the data "id, name, email, whatsapp, city and uf", and finally to return the ID.
+
+### IncidentController
+```
+const connection =  require('../database/connection');
+
+module.exports  = {
+
+async  index(request, response) {
+	const { page =  1 } = request.query;
+	const [count] =  await  connection('incidents').count();
+
+	const incidents =  await  connection('incidents')
+		.join('ongs', 'ongs.id', '=', 'incidents.ong_id')
+		.limit(5)
+		.offset((page -  1) *  5)
+		.select(
+			'incidents.*',
+			'ongs.name',
+			'ongs.email',
+			'ongs.whatsapp',
+			'ongs.city',
+			'ongs.uf'
+		);
+
+		response.header('X-Total-Count', count['count(*)']);
+
+		return response.json(incidents);
+
+	},
+
+	async  create(request, response) {
+		const { title, description, value } = request.body;
+		const ong_id = request.headers.authorization;
+
+		const [id] =  await  connection('incidents').insert({
+			title,
+			description,
+			value,
+			ong_id,
+		});
+
+		return response.json({ id });
+	},
+
+	async  delete(request, response) {
+		const { id } = request.params;
+		const ong_id = request.headers.authorization;
+
+ 		const incident =  await  connection('incidents')
+			.where('id', id)
+			.select('ong_id')
+			.first();
+
+  
+
+			if (incident.ong_id !== ong_id) {
+
+			return response.status(401).json({ error:  'Operation not permitted.' });
+
+			}
+
+			await  connection('incidents').where('id', id).delete();
+
+			return response.status(204).send();
+	}
+};
+```
+
+Importing the connection to the database.
+Starting the page by requesting URL parameters (query params) with "page 1".
+Waiting for the connection to the "incidents" table and counting how many elements are inserted.
+Waiting for the connection to the table, checking if the two tables have the same "ong_id", limiting 5 elements to each page and defining an additional 5 for each next page.
+Selecting all the specific NGO incidents and the fields in the NGO table.
+Making the total count of the elements and returning the incidents.
+Then, searching for the values of the incidents in the body of the request and checking if the "ong_id" is the same as the authorization of the header and thus creating the incidents with "title, description, value and ong_id" and finally returning the ID.
+After all, to delete the incidents, checking if the "ong_id" is the same as "incident.ong_id", so that only the logged-in NGO can delete its incidents, if not, it returns OPERATION NOT PERMITTED.
+
+### ProfileController
+```
+const connection =  require('../database/connection');
+
+module.exports  = {
+	async  index(request, response) {
+		const ong_id = request.headers.authorization;
+		
+		const incidents =  await  connection('incidents')
+			.where('ong_id', ong_id)
+			.select('*');
+
+			return response.json(incidents);
+		}
+}
+```
+Importing the database connection.
+Exporting the function that returns all incidents to the NGO that is logged.
+
+### SessionController
+```
+const connection =  require('../database/connection');
+
+module.exports  = {
+	async  create(request, response) {
+		const { id } = request.body;
+		const ong =  await  connection('ongs')
+			.where('id', id)
+			.select('name')
+			.first();
+			
+		if (!ong) {
+
+		return response.status(400).json({ error:  'No ONG found with this ID.'})
+		}
+
+	return response.json(ong);
+	}
+}
+```
+Importing the connection to the database.
+Exporting the function that checks if the NGO ID exists to login the account and selects the name of that NGO.
+If the NGO does not exist, it returns the error "NO NGO FOUND WITH THIS ID."
+
+### Knexfile.js
+```
+development: {
+	client:  'sqlite3',
+	connection: {
+		filename:  './src/database/db.sqlite'
+	},
+	migrations: {
+		directory:  './src/database/migrations'
+	},
+	useNullAsDefault:  true,
+},
+
+test: {
+	client:  'sqlite3',
+	connection: {
+		filename:  './src/database/test.sqlite'
+	},
+	migrations: {
+		directory:  './src/database/migrations'
+	},
+	useNullAsDefault:  true,
+},
+```
+
+Automatically generated file when you run npm install knex, and then run npx knex init.
+The only changes were:
+- Change the migration directory to "./src/database/migrations";
+- Create the test database.
+
 
 
