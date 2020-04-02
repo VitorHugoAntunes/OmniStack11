@@ -11,10 +11,10 @@ Application developed with Node.js (back-end), React (front-end) and React Nativ
 The application has two parts: a website and a mobile app.
 The purpose is to register NGOs (Non-governmental organization) and publish incidents for users of the app to contact and make donations.
 
-- [Back-end](#Back-end)
-- [Front-end](#Front-end)
-- [Mobile](#Mobile)
-- [Tests](#Tests)
+- [Back-end](#Back-end);
+- [Front-end](#Front-end);
+- [Mobile](#Mobile);
+- [Tests](#Tests).
 
 ## Technologies
 
@@ -218,9 +218,9 @@ module.exports  = {
 };
 ```
 
-Import the unique ID of the NGO and the connection to the database.
-Exports the function that returns the creation of the NGOs.
-Async is used to wait for the connection with the NGO table and thus return all data.
+Import the unique ID of the NGO and the connection to the database.<br/>
+Exports the function that returns the creation of the NGOs.<br/>
+Async is used to wait for the connection with the NGO table and thus return all data.<br/>
 Then, async is used to wait for the connection to the table to insert the data "id, name, email, whatsapp, city and uf", and finally to return the ID.
 
 ### IncidentController
@@ -290,13 +290,13 @@ async  index(request, response) {
 };
 ```
 
-Importing the connection to the database.
-Starting the page by requesting URL parameters (query params) with "page 1".
-Waiting for the connection to the "incidents" table and counting how many elements are inserted.
-Waiting for the connection to the table, checking if the two tables have the same "ong_id", limiting 5 elements to each page and defining an additional 5 for each next page.
-Selecting all the specific NGO incidents and the fields in the NGO table.
-Making the total count of the elements and returning the incidents.
-Then, searching for the values of the incidents in the body of the request and checking if the "ong_id" is the same as the authorization of the header and thus creating the incidents with "title, description, value and ong_id" and finally returning the ID.
+Importing the connection to the database.<br/>
+Starting the page by requesting URL parameters (query params) with "page 1".<br/>
+Waiting for the connection to the "incidents" table and counting how many elements are inserted.<br/>
+Waiting for the connection to the table, checking if the two tables have the same "ong_id", limiting 5 elements to each page and defining an additional 5 for each next page.<br/>
+Selecting all the specific NGO incidents and the fields in the NGO table.<br/>
+Making the total count of the elements and returning the incidents.<br/>
+Then, searching for the values of the incidents in the body of the request and checking if the "ong_id" is the same as the authorization of the header and thus creating the incidents with "title, description, value and ong_id" and finally returning the ID.<br/>
 After all, to delete the incidents, checking if the "ong_id" is the same as "incident.ong_id", so that only the logged-in NGO can delete its incidents, if not, it returns OPERATION NOT PERMITTED.
 
 ### ProfileController
@@ -315,7 +315,7 @@ module.exports  = {
 		}
 }
 ```
-Importing the database connection.
+Importing the database connection.<br/>
 Exporting the function that returns all incidents to the NGO that is logged.
 
 ### SessionController
@@ -339,8 +339,8 @@ module.exports  = {
 	}
 }
 ```
-Importing the connection to the database.
-Exporting the function that checks if the NGO ID exists to login the account and selects the name of that NGO.
+Importing the connection to the database.<br/>
+Exporting the function that checks if the NGO ID exists to login the account and selects the name of that NGO.<br/>
 If the NGO does not exist, it returns the error "NO NGO FOUND WITH THIS ID."
 
 ### Knexfile.js
@@ -368,9 +368,9 @@ test: {
 },
 ```
 
-Automatically generated file when you run npm install knex, and then run npx knex init.
+Automatically generated file when you run `npm install knex`, and then run `npx knex init`.<br/>
 The only changes were:
-- Change the migration directory to "./src/database/migrations";
+- Change the migration directory to `'./src/database/migrations'`;
 - Create the test database.
 
 
