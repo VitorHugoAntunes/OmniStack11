@@ -57,7 +57,7 @@ app.use(errors());
 module.exports  = app;
 ```
 
-Importing from their respective folders the express, cors, celebrate and routes.
+Importing from their respective folders the express, cors, celebrate and routes.<br/>
 And "app.use" is using the imported middlewares.
 
 ## Routes.js folder
@@ -107,15 +107,15 @@ routes.delete('/incidents/:id', celebrate({
 
 module.exports  = routes;
 ```
-Importing the express again and importing the route controllers.
-Creation of application routes.
-The "sessions" route in the `POST`method for creating a login.
-The "NGO" route in the `GET` method to list the NGOs created.
-The "NGO" route in the `POST` method for creating NGOs in the application.
-The "profile" route in the `GET` method to search for the NGO's profile when accessing the profile.
-The "incidents" route in the `GET` method to search for incidents created in that profile.
-The "incidents" route in the `POST` method to create the incidents in the NGO's profile.
-And the "incidents /: id" route in the `DELETE` method to delete specific incidents in the NGO's profile.
+Importing the express again and importing the route controllers.<br/>
+Creation of application routes.<br/>
+The "sessions" route in the `POST`method for creating a login.<br/>
+The "NGO" route in the `GET` method to list the NGOs created.<br/>
+The "NGO" route in the `POST` method for creating NGOs in the application.<br/>
+The "profile" route in the `GET` method to search for the NGO's profile when accessing the profile.<br/>
+The "incidents" route in the `GET` method to search for incidents created in that profile.<br/>
+The "incidents" route in the `POST` method to create the incidents in the NGO's profile.<br/>
+And the "incidents /: id" route in the `DELETE` method to delete specific incidents in the NGO's profile.<br/>
 Finally, exporting the routes.
 
 ## Database folder
@@ -137,7 +137,7 @@ exports.down  =  function(knex) {
 	return knex.schema.dropTable('ongs');
 };
 ```
-Creation of the NGO table in the database.
+Creation of the NGO table in the database.<br/>
 Exports.up to create the table and exports.down to delete.
 
 ```
@@ -156,9 +156,9 @@ exports.down  =  function(knex) {
 	return knex.schema.dropTable('incidents');
 };
 ```
-Creation of the Incidents table in the database.
-Exports.up to create the table and exports.down to delete.
-The `table.increments();` for creating auto-increment ID.
+Creation of the Incidents table in the database.<br/>
+Exports.up to create the table and exports.down to delete.<br/>
+The `table.increments();` for creating auto-increment ID.<br/>
 Foreign key relationships between the two tables.
 
 ### Connection
@@ -172,8 +172,8 @@ const config =  process.env.NODE_ENV  ===  'test'  ? configuration.test : config
 const connection =  knex(config);
 module.exports  = connection;
 ```
-Importing the `knex` and connecting the database.
-Checking if the database used is the development database or the test database.
+Importing the `knex` and connecting the database.<br/>
+Checking if the database used is the development database or the test database.<br/>
 In the end, exporting the connection.
 
 
