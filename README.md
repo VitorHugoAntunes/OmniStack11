@@ -11,10 +11,10 @@ Application developed with Node.js (back-end), React (front-end) and React Nativ
 The application has two parts: a website and a mobile app.
 The purpose is to register NGOs (Non-governmental organization) and publish incidents for users of the app to contact and make donations.
 
-## [Back-end](#Back-end)
-## [Front-end](#Front-end)
-## [Mobile](#Mobile)
-## [Tests](#Tests)
+- [Back-end](#Back-end)
+- [Front-end](#Front-end)
+- [Mobile](#Mobile)
+- [Tests](#Tests)
 
 ## Technologies
 
