@@ -11,6 +11,8 @@ Application developed with Node.js (back-end), React (front-end) and React Nativ
 The application has two parts: a website and a mobile app.
 The purpose is to register NGOs (Non-governmental organization) and publish incidents for users of the app to contact and make donations.
 
+- [Back-end](#Back-end)
+
 ## Technologies
 
 - Node.js 
@@ -20,6 +22,8 @@ The purpose is to register NGOs (Non-governmental organization) and publish inci
 - SQLite
 - Insomnia
 
+<a name="Back-end"><a/>
+	
 # Back-end application
 
 ### Installed packages, frameworks and dependencies :
