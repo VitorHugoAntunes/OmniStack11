@@ -1,7 +1,3 @@
-
-
-
-
 # OmniStack 11.0 / Be The Hero
 
 Application developed with Node.js (back-end), React (front-end) and React Native (mobile) during the Week Omnistack 11.0 provided by [RocketSeat](https://rocketseat.com.br/).
@@ -11,10 +7,10 @@ Application developed with Node.js (back-end), React (front-end) and React Nativ
 The application has two parts: a website and a mobile app.
 The purpose is to register NGOs (Non-governmental organization) and publish incidents for users of the app to contact and make donations.
 
-- [Back-end](#Back-end);
-- [Front-end](#Front-end);
-- [Mobile](#Mobile);
-- [Tests](#Tests).
+- [Back-end](#Back-end)
+- [Front-end](#Front-end)
+- [Mobile](#Mobile)
+- [Tests](#Tests)
 
 ## Technologies
 
@@ -115,15 +111,31 @@ routes.delete('/incidents/:id', celebrate({
 module.exports  = routes;
 ```
 Importing the express again and importing the route controllers.<br/>
-Creation of application routes.<br/>
-The "sessions" route in the `POST`method for creating a login.<br/>
+Creation of application routes.<br/><br/>
+
+The "sessions" route in the `POST` method for creating a login.<br/>
+![Sessions](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoLogin.PNG "Sessions") <br/> <br/> 
+
 The "NGO" route in the `GET` method to list the NGOs created.<br/>
+![NgoList](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoOngList.PNG "NgoList") <br/> <br/> 
+
 The "NGO" route in the `POST` method for creating NGOs in the application.<br/>
+![NgoCreate](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoOngCreate.PNG "NgoCreate") <br/> <br/> 
+
 The "profile" route in the `GET` method to search for the NGO's profile when accessing the profile.<br/>
+![Profile](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoProfile.PNG "Profile") <br/> <br/> 
+
 The "incidents" route in the `GET` method to search for incidents created in that profile.<br/>
+![IncidentsList](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoListPage1.PNG "IncidentsList") <br/> <br/> 
+
 The "incidents" route in the `POST` method to create the incidents in the NGO's profile.<br/>
+![IncidentsCreate](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoIncidentCreate.PNG "InsoLogin")<br/>  
+![IncidentsCreate2](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoIncidentCreate2.PNG "IncidentsCreate2")<br/> <br/> 
+
 And the "incidents /: id" route in the `DELETE` method to delete specific incidents in the NGO's profile.<br/>
-Finally, exporting the routes.
+![IncidentsDelete](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/InsoIncidentDelete.PNG "IncidentsDelete")<br/> <br/> 
+
+And in the end, exporting the routes.
 
 ## Database folder
 
@@ -297,7 +309,7 @@ Waiting for the connection to the table, checking if the two tables have the sam
 Selecting all the specific NGO incidents and the fields in the NGO table.<br/>
 Making the total count of the elements and returning the incidents.<br/>
 Then, searching for the values of the incidents in the body of the request and checking if the "ong_id" is the same as the authorization of the header and thus creating the incidents with "title, description, value and ong_id" and finally returning the ID.<br/>
-After all, to delete the incidents, checking if the "ong_id" is the same as "incident.ong_id", so that only the logged-in NGO can delete its incidents, if not, it returns OPERATION NOT PERMITTED.
+After all, to delete the incidents, checking if the "ong_id" is the same as "incident.ong_id", so that only the logged-in NGO can delete its incidents, if not, it returns `OPERATION NOT PERMITTED`.
 
 ### ProfileController
 ```
