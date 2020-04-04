@@ -607,3 +607,565 @@ Changing the title size and margin.<br/>
 ### The result of this page's code:
 
 ![loginPage](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/LoginPage.PNG "loginPage")
+
+## Register
+
+### Index.js
+
+```
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
+
+import api from '../../services/api';
+
+import './styles.css';
+
+import logoImg from '../../assets/logo.svg';
+
+export default function Register() {
+
+    const [name, setName] = useState('');
+    const [email, setEmail] = useState('');
+    const [whatsapp, setWhatsapp] = useState('');
+    const [city, setCity] = useState('');
+    const [uf, setUf] = useState('');
+
+    const history = useHistory();
+
+    async function handleRegister(e) {
+        e.preventDefault();
+        
+        const data = {
+            name,
+            email,
+            whatsapp,
+            city,
+            uf,
+        };
+
+       try {
+            const response = await api.post('ongs', data);
+
+            alert(`Seu ID de acesso: ${response.data.id}`);
+
+            history.push('/');
+       } catch (err) {
+           alert('Erro no cadastro, tente novamente.');
+       }
+    }
+
+    return (
+        <div className="register-container">
+            <div className="content">
+                <section>
+                    <img src={logoImg} alt="Be The Hero"/>
+
+                    <h1>Cadastro</h1>
+                    <p>Faça seu cadastro, entre na plataforma e ajude pessoas a encontrarem os casos da sua ONG.</p>
+
+                    <Link className="Back-link" to="/">
+                        <FiArrowLeft size={16} color="#E02041"/>
+                        Voltar para a home
+                    </Link>
+                </section>
+
+                <form onSubmit={handleRegister}>
+                    <input 
+                        placeholder="Nome da ONG"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                    />
+
+                    <input 
+                        type="email" 
+                        placeholder="E-mail"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                    />
+
+                    <input 
+                        placeholder="WhatsApp"
+                        value={whatsapp}
+                        onChange={e => setWhatsapp(e.target.value)}
+                    />
+
+                    <div className="input-group">
+                        <input 
+                            placeholder="Cidade"
+                            value={city}
+                            onChange={e => setCity(e.target.value)}
+                        />
+
+                        <input 
+                            placeholder="UF" 
+                            style={{ width: 80 }}
+                            value={uf}
+                            onChange={e => setUf(e.target.value)}
+                        />
+                    </div>
+
+                    <button className="button" type="submit"> Cadastrar </button>
+                </form>
+            </div>
+        </div>
+    )
+}
+```
+Importing React and useState from the react folder.<br/>
+Importing the Link and useHistory from the react-router-dom folder.<br/>
+Importing the left arrow icon from the react-icons folder.<br/>
+Importing the API from the services folder.<br/>
+Importing styles.<br/>
+Importing the logo from the assets folder.<br/>
+Exporting the function that creates the Register page.<br/>
+Creating the name, email, whatsapp, city and uf variables using useState to not change their values directly.<br/>
+Storing useHistory with the variable `history`.<br/>
+Async function that sends the Register.<br/>
+Preventing the default behavior of onSubmit to not send to another page.<br/>
+Creating an object in the Data variable with the data of name, email, whatsapp, city and uf.<br/>
+Waiting for waiting for the api to send the data to the NGO table and showing an alert with the created ID, after that sending the user to the Login home page.<br/>
+If there are errors in the registration, a message is sent to the user.<br/>
+Returns the HTML elements of the Register page.<br/>
+A div was created to encapsulate the elements of the NGO registration form.<br/>
+Session with the logo, a title, a paragraph about the registration and a link to return to the Login page with the left arrow icon.<br/>
+Form that when sent activates the function of sending the Register.<br/>
+The form contains inputs to get the name, email, whatsapp, city and UF values of the NGOs and a button to send all data.
+
+
+### Styles.css
+```
+.register-container {
+    width: 100%;
+    max-width: 1120px;
+    height: 100vh;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.register-container .content {
+    width: 100%;
+    padding: 96px;
+    background: #f0f0f5;
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} 
+
+.register-container .content section {
+    width: 100%;
+    max-width: 380px;
+}
+
+.register-container .content section h1 {
+    margin: 64px 0 32px;
+    font-size: 32px; 
+}
+
+.register-container .content section p {
+    font-size: 18px;
+    color: #737380;
+    line-height:  32px;
+}
+
+.register-container .content form {
+    width: 100%;
+    max-width: 450px;
+}
+
+.register-container .content form input {
+    margin-top: 8px;
+}
+
+.register-container .content form .input-group {
+    display: flex;
+}
+
+.register-container .content form .input-group input + input {
+    margin-left: 8px;
+}
+```
+Defining height, width, margin and aligning the registration form container to the center.<br/>
+Stylizing and reorganizing the section of the title and paragraph and then organizing and styling the inputs on the left side of the session.
+
+### The result of this page's code:
+
+![registerPage](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/RegisterPage.PNG "registerPage")
+
+
+## Profile
+
+### Index.js
+
+```
+import React, { useState, useEffect } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+
+import { FiPower, FiTrash2 } from 'react-icons/fi';
+
+import api from '../../services/api';
+
+import './styles.css';
+
+import logoImg from '../../assets/logo.svg';
+
+export default function Profile() {
+
+    const [incidents, setIncidents] = useState([]);
+    
+    const history = useHistory()
+
+    const ongId = localStorage.getItem('ongId');
+    const ongName = localStorage.getItem('ongName');
+
+    useEffect(() => {
+        api.get('profile', {
+            headers: {
+                Authorization: ongId,
+            }
+        }).then(response => {
+            setIncidents(response.data);
+        })
+    }, [ongId]);
+
+    async function handleDeleteIncident(id) {
+        try {
+            await api.delete(`incidents/${id}`, {
+                headers: {
+                    Authorization: ongId,
+                }
+            });
+
+            setIncidents(incidents.filter(incident => incident.id !== id));
+        } catch (err) {
+            alert('Erro ao deletar caso, tente novamente.')
+        }
+    }
+
+    function handleLogout(){
+        localStorage.clear();
+
+        history.push('/');
+    }
+
+    return (
+        <div className="profile-container">
+            <header>
+                <img src={logoImg} alt="Be The Hero"/>
+            <span>Bem vinda, {ongName}</span>
+
+                <Link className="button" to="incidents/new">Cadastrar novo caso</Link>
+
+                <button onClick={handleLogout} type="button">
+                    <FiPower size="18" color="#E02041"/>
+                </button>
+            </header>
+
+            <h1>Casos cadastrados</h1>
+
+            <ul>
+                {incidents.map(incident => (
+                    <li key={incident.id}>
+                        <strong>CASO:</strong>
+                        <p>{incident.title}</p>
+
+                        <strong>DESCRIÇÃO:</strong>
+                        <p>{incident.description}</p>
+
+
+                        <strong>VALOR:</strong>
+                        <p>{Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}</p>
+
+                        <button onClick={() => handleDeleteIncident(incident.id)} type="button">
+                            <FiTrash2 size={20} color="#a8a8b3"/>
+                        </button>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+}
+```
+Importing React, useState and useEffect from the react folder.<br/>
+Importing the Link and useHistory from the react-router-dom folder.<br/>
+Importing the icons.<br/>
+Importing the API.<br/>
+Importing styles and Logo.<br/>
+Exporting the function that stores the elements of the NGO profile page.<br/>
+Storing the variable `incidents` and not changing it directly using useState.<br/>
+Storing useHistory with the variable `history`.<br/>
+Search the localStorage for the name and ongID of the NGO and store it in variables.<br/>
+Function that searches for the NGO ID and stores the incident data in the variable setIncidents.<br/>
+Async function that deletes the incidents, awaits the API response to delete the incidents by ID according to the NGO's ongID logged in.<br/>
+When trying to delete, make a filter to confirm that the IDs are the same, if not, an error message is sent.<br/>
+Logout function, clears localStorage and sends the user back to the Login page.<br/>
+Returns the HTML elements of the page.<br/>
+A header with the logo, a welcome message with the name of the NGO logged in, a button to register new incidents and a button to Logout.<br/>
+Below, a title and a list of all registered incidents, all with a unique key that is the incident ID (uniquely identify them and exclude only one and not all).<br/>
+Filling the paragraphs with the incident data (title, description and value) and formatting the value with the Brazilian currency and lastly, a button with Trash icon that activates the function to delete incidents.
+
+### Styles.css
+```
+.profile-container {
+    width: 100%;
+    max-width: 1180px;
+    padding: 0 30px;
+    margin: 32px auto;
+}
+
+.profile-container header {
+    display: flex;
+    align-items: center;
+}
+
+.profile-container header span {
+    font-size: 20px;
+    margin-left: 24px;
+}
+
+
+.profile-container header img {
+    height: 64px;
+}
+
+.profile-container header a {
+    width: 260px;
+    margin-left: auto;
+    margin-top: 0;
+}
+
+.profile-container header button {
+    height: 60px;
+    width: 60px;
+    border-radius: 4px;
+    border: 1px solid #dcdce6;
+    background: transparent;
+    margin-left: 16px;
+    transition: border-color 0.2s;
+}
+
+.profile-container header button:hover {
+    border-color: #999;
+}
+
+.profile-container h1 {
+    margin-top: 80px;
+    margin-bottom: 24px;
+}
+
+.profile-container ul {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 24px;
+    list-style: none;
+}
+
+.profile-container ul li {
+    background: #fff;
+    padding: 24px;
+    border-radius: 8px;
+    position: relative;
+}
+
+.profile-container ul li button {
+    position: absolute;
+    right: 24px;
+    top: 24px;
+    border: 0px;
+    background-color: white;
+}
+
+.profile-container ul li button:hover {
+    opacity: 0.8;
+}
+
+.profile-container ul li strong {
+    display: block;
+    margin-bottom: 16px;
+    color: #41414d;
+}
+
+.profile-container ul li p + strong {
+    margin-top: 32px;
+}
+
+.profile-container ul li p {
+    color: #737380;
+    line-height: 21px;
+    font-size: 16px;
+}
+```
+Rearranging the position and size of the main container of the page and the elements of the header.<br/>
+Stylizing and rearranging all elements of the list of incidents such as position, colors, size and margin of paragraphs and buttons.
+
+### The result of this page's code: 
+
+![profilePage](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/ProfilePage.PNGa "profilePage")
+
+## NewIncident
+
+### Indes.js
+```
+import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
+import { FiArrowLeft } from 'react-icons/fi';
+
+import api from '../../services/api';
+
+import './styles.css';
+
+import logoImg from '../../assets/logo.svg';
+
+export default function NewIncident(){
+
+    const [title, setTitle] = useState('');
+    const [description, setDescription] = useState('');
+    const [value, setValue] = useState('');
+
+    const history = useHistory();
+
+    const ongId = localStorage.getItem('ongId')
+
+    async function handleNewIncident(e) {
+        e.preventDefault();
+
+        const data = {
+            title,
+            description,
+            value,
+        };
+
+        try {
+            await api.post('incidents', data, {
+                headers: {
+                    Authorization: ongId,
+                }
+            })
+
+            history.push('/profile');
+        } catch (err) {
+            alert('Erro ao cadastrar caso, tente novamente.');
+        }
+    }
+
+    return (
+        <div className="new-incident-container">
+            <div className="content">
+                <section>
+                    <img src={logoImg} alt="Be The Hero"/>
+
+                    <h1>Cadastrar novo caso</h1>
+                    <p>Descreva o caso detalhadamente para encontrar um herói para resolver isso.</p>
+
+                    <Link className="Back-link" to="/profile">
+                        <FiArrowLeft size={16} color="#E02041"/>
+                        Voltar
+                    </Link>
+                </section>
+
+                <form onSubmit={handleNewIncident}>
+                    <input 
+                        placeholder="Título do caso"
+                        value={title}
+                        onChange={e => setTitle(e.target.value)}
+                        />
+                    <textarea 
+                        placeholder="Descrição"
+                        value={description}
+                        onChange={e => setDescription(e.target.value)}
+                        />
+                    <input   
+                        placeholder="Valor em reais"
+                        value={value}
+                        onChange={e => setValue(e.target.value)}
+                        />
+                    <button className="button" type="submit"> Cadastrar </button>
+                </form>
+            </div>
+        </div>
+    );
+}
+```
+Importing React and useState from the react folder.<br/>
+Importing Link and useHistory from the react-router-dom folder and the left arrow icon from the react-icons folder.<br/>
+Importing the API from the services folder.<br/>
+Importing the logo from the assets folder.<br/>
+Exporting the function that creates a new incident.<br/>
+Creating the title, description and value variables and other `set` variables and not changing the state of the variables directly.<br/>
+Storing useHistory with the variable `history`.<br/>
+Search the localStorage for the name and ongID of the NGO and store it in variable.<br/>
+Async function that sends the creation data of the new incident.<br/>
+Preventing the default behavior of onSubmit to not send to another page.<br/>
+Creating an object with title, description and value data.<br/>
+Waiting for the api to send the data to the incident table and checking the authorization of the header to send the user back to the profile page. If it fails, show an error alert about the registration.<br/>
+Returning the HTML elements of the page.<br/>
+A session was created to attach the logo, the title and a paragraph explaining the registration and a link to return to the profile page.<br/>
+Form that, when sent, activates the function that creates the new incident.<br/>
+Inputs were created that receive the title value, description and value of the incidents.
+
+### Styles.css
+```
+.new-incident-container {
+    width: 100%;
+    max-width: 1120px;
+    height: 100vh;
+    margin: 0 auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.new-incident-container .content {
+    width: 100%;
+    padding: 96px;
+    background: #f0f0f5;
+    
+    box-shadow: 0 0 100px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+} 
+
+.new-incident-container .content section {
+    width: 100%;
+    max-width: 380px;
+}
+
+.new-incident-container .content section h1 {
+    margin: 64px 0 32px;
+    font-size: 32px; 
+}
+
+.new-incident-container .content section p {
+    font-size: 18px;
+    color: #737380;
+    line-height:  32px;
+}
+
+.new-incident-container .content form {
+    width: 100%;
+    max-width: 450px;
+}
+
+.new-incident-container .content form input,
+.new-incident-container .content form textarea {
+    margin-top: 8px;
+}
+```
+Defining margin, width, height and alignment of the main container.<br/>
+Organizing the contents of the container.<br/>
+Stylizing the container session.<br/>
+Defining the width and size of the form and the inputs and textareas.
+
+### The result of this page's code: 
+
+![NewIncidentPage](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/NewIncidentPage.PNG "NewIncidentPage")
