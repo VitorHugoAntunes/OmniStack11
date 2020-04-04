@@ -52,7 +52,7 @@ export default function NewIncident(){
 
                     <Link className="Back-link" to="/profile">
                         <FiArrowLeft size={16} color="#E02041"/>
-                        Voltar para home
+                        Voltar
                     </Link>
                 </section>
 
