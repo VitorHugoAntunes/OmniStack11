@@ -1511,7 +1511,7 @@ Stylizing the list and the incidents on the list and finally aligning the button
 
 ### The result of this screen's code:
 
-<div style="text-align:center">
+<div align="center">
 	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/expoIncidents1.jpg" alt="appScreenIncidents"/>
 </div>
 
@@ -1722,6 +1722,6 @@ Organizing and styling the contact box, defining the style of the texts and the 
 
 ### The result of this screen's code:
 
-<div style="text-align:center">
+<div align="center">
 	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/expoDetails1.jpg" alt="appScreenDetails"/>
 </div>
