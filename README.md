@@ -1,8 +1,3 @@
-
-
-
-
-
 # OmniStack 11.0 / Be The Hero
 
 Application developed with Node.js (back-end), React (front-end) and React Native (mobile) during the Week Omnistack 11.0 provided by [RocketSeat](https://rocketseat.com.br/).
@@ -1006,7 +1001,7 @@ Stylizing and rearranging all elements of the list of incidents such as position
 
 ### The result of this page's code: 
 
-![profilePage](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/ProfilePage.PNGa "profilePage")
+![profilePage](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/ProfilePage.PNG "profilePage")
 
 ## NewIncident
 
@@ -1169,3 +1164,560 @@ Defining the width and size of the form and the inputs and textareas.
 ### The result of this page's code: 
 
 ![NewIncidentPage](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/NewIncidentPage.PNG "NewIncidentPage")
+
+<a name="Mobile"><a/>
+	
+# Mobile
+
+The project was created by running `expo init mobile` (Need the expo already installed globally: `npm install -g expo-cli`).<br/>
+The blank template was chosen when creating the project.
+
+### Installed packages, frameworks and dependencies :
+
+- **Expo-cli**;
+- **React-navigation**;
+- **React-icons**
+- **Stack navigator**
+- **Expo-constants**;
+- **Mail-composer**;
+- **Axios**;
+- **Intl**;
+
+# Mobile DOM
+
+### App.js
+```
+import 'intl';
+import 'intl/locale-data/jsonp/pt-BR';
+
+import React from 'react';
+import Routes from './src/routes';
+
+export default function App() {
+  return (
+    <Routes/>
+  );
+}
+```
+Main file that will be used to render the application's screens.<br/>
+Importing Intl to format monetary values.<br/>
+Importing React.<br/>
+Importing Routes from the routes folder.<br/>
+Exporting the function that returns the created routes as a result.
+
+### App.json
+
+```
+{
+  "expo": {
+    "name": "Be The Hero",
+    "slug": "bethehero",
+    "privacy": "public",
+    "sdkVersion": "36.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#E02041"
+    },
+    ...
+}
+```
+Standard project file, the only changes were:
+- Name (changed to Be The Hero);
+- Slug (changed to bethehero);
+- Icon (changed to icon.png);
+- Splash (changed to splash.png).
+
+
+# Src folder
+
+### Routes.js
+
+```
+import React from 'react';
+
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack'
+
+const AppStack = createStackNavigator();
+
+import Incidents from './pages/Incidents';
+import Detail from './pages/Detail';
+
+export default function Routes() {
+    return (
+        <NavigationContainer>
+
+            <AppStack.Navigator screenOptions={{ headerShown: false}}>
+                <AppStack.Screen name="Incidents" component={Incidents}/>
+                <AppStack.Screen name="Detail" component={Detail}/>
+            </AppStack.Navigator>
+
+        </NavigationContainer>
+    );
+}
+```
+Importing React from the react folder.<br/>
+Importing NavigationContainer and createStackNavigator.<br/>
+Passing createStackNavigator to the AppStack variable.<br/>
+Importing the Incidents and Detail routes.<br/>
+Exporting the function that returns the routes.<br/>
+Navigation container around the routes to manage them.<br/>
+Creating the navigation and removing the default header.<br/>
+Creating the screens with the components of the Incidents and Detail pages.
+
+## Services folder
+
+### Api.js
+
+```
+import axios from 'axios';
+
+const api = axios.create({
+    baseURL: 'http://10.0.0.104:3333'
+});
+
+export default api;
+```
+Importing the axios.<br/>
+Creating the api variable and using axios to connect to the api in the URL that was used on the backend.
+
+# Pages
+
+## Incidents
+
+### Index.js
+```
+import React, { useState, useEffect } from 'react';
+import { Feather } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { View, FlatList, Image, Text, TouchableOpacity } from 'react-native';
+
+import api from '../../services/api';
+
+import logoImg from '../../assets/logo.png'
+
+import styles from './styles';
+
+export default function Incidents() {
+
+    const [incidents, setIncidents] = useState([]);
+    const [total, setTotal] = useState(0);
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+
+    const navigation = useNavigation();
+
+    function navigateToDetail(incident) {
+        navigation.navigate('Detail', { incident });
+    }
+
+    async function loadIncidents() {
+
+        if (loading) {
+            return;
+        }
+
+        if (total > 0 && incidents.length === total) {
+            return;
+        }
+
+        setLoading(true);
+        
+        const response = await api.get('incidents', {
+            params: { page }
+        });
+        
+        setIncidents([...incidents, ...response.data]);
+        setTotal(response.headers['x-total-count']);
+        setPage(page + 1);
+        setLoading(false);
+    }
+
+    useEffect(() => {
+        loadIncidents();
+    }, []);
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Image source={logoImg}/>
+                <Text style={styles.headerText}>
+                    Total de <Text style={styles.headerTextBold}>{total} casos.</Text>
+                </Text>
+            </View>
+
+            <Text style={styles.title}>Bem vindo!</Text>
+            <Text style={styles.description}>Escolha um dos casos abaixo e salve o dia.</Text>
+
+
+            <FlatList
+                data={incidents}
+                style={styles.incidentList}
+                keyExtractor={incident => String(incident.id)}
+                //showsVerticalScrollIndicator={false}
+                onEndReached={loadIncidents}
+                onEndReachedThreshold={0.2}
+                renderItem={({ item: incident }) => (
+                    <View style={styles.incident}> 
+                            <Text style={styles.incidentProperty}>ONG:</Text>
+                            <Text style={styles.incidentValue}>{incident.name}</Text>
+
+                            <Text style={styles.incidentProperty}>CASO:</Text>
+                            <Text style={styles.incidentValue}>{incident.title}</Text>
+
+                            <Text style={styles.incidentProperty}>VALOR:</Text>
+                                <Text style={styles.incidentValue}>{Intl.NumberFormat('pt-BR', 
+                                    { style: 'currency', 
+                                    currency: 'BRL' })
+                                    .format(incident.value)}
+                                </Text>
+ 
+                            <TouchableOpacity 
+                            style={styles.detailsButton} 
+                            onPress={() => navigateToDetail(incident)}
+                            >
+                                <Text style={styles.detailsButtonText}>
+                                    Ver mais detalhes
+                                </Text>
+                                <Feather 
+                                name='arrow-right' 
+                                size={16}  
+                                color="#E02041"/>
+                            </TouchableOpacity>
+                    </View>
+                )}
+            />
+        </View>
+    );
+}
+```
+Importing React, useState and useEffect from the react folder.<br/>
+Importing expo icons.<br/>
+importing useNavigation and useRoute.<br/>
+Importing View, FlatList, Image, Text, TouchableOpacity from the react-native folder (each component used on the page needs to be imported).<br/>
+Importing the api from the services folder.<br/>
+Importing the logo and styles.<br/>
+Exporting the function that displays incidents on the app screen.<br/>
+Creating the incidents, total, page and loading variables and other `set` variables and not changing the state of the variables directly, setting the state of incidents to empty array, total to 0, page to 1 and loading to false.<br/>
+Function that navigates to the Detail screen and shows the user the object with the details of a specific incident.<br/>
+Function that loads incidents with conditions: if loading and if the total if incidents is greater than 0 and the amount is equal to the total number of incidents, the variable setLoading is true.<br/>
+Searching the parameters of the incident page in the API.<br/>
+Assigning all previous incidents and response data to the variable setIncidents.<br/>
+Searching for the total number of incidents that were saved in the headers.<br/>
+Adding one more page and changing the load variable to false.<br/>
+Passing the incident loading function to useEffect.<br/>
+Returning the screen components.<br/>
+Creating a main view for all elements of the page.<br/>
+Creating a view for the logo and total incidents.<br/>
+Creating a title for the page.<br/>
+Creating a list to show the incidents on the screen, passing the attributes of the incident data, the styles of the incident list, using the incident ID to create a unique key for the incidents.<br/>
+Creating an infinite scroll using onEndReached to load more incidents when the user scrolls down and only load new incidents when it is 20% to finish the screen.<br/>
+Rendering the incident items in a view, containing the name of the NGO, the incident and the value (formatted in Brazilian currency) and all with their respective styles.<br/>
+At the end of the view, a button that when pressed takes you to the incident details screen.
+
+### Styles.js
+```
+import { StyleSheet } from 'react-native';
+import Constants from 'expo-constants';
+
+export default StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingHorizontal: 24,
+        paddingTop: Constants.statusBarHeight + 20,
+    },
+
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+
+    headerText: {
+        fontSize: 15,
+        color: '#737380',
+    },
+
+    headerTextBold: {
+        fontWeight: 'bold',
+    },
+
+    title: {
+        fontSize: 30,
+        marginBottom: 16,
+        marginTop: 48,
+        color: '#13131a',
+        fontWeight: 'bold',
+    },
+
+    description: {
+        fontSize: 16,
+        lineHeight: 24,
+        color: '#737380',
+    },
+
+    incidentList: {
+        marginTop: 32,
+    },
+
+    incident: {
+        padding: 24,
+        borderRadius: 8,
+        backgroundColor: '#FFF',
+        marginBottom: 16,
+    },
+
+    incidentProperty: {
+        fontSize: 14,
+        color: '#41414d',
+        fontWeight: 'bold'
+    },
+
+    incidentValue: {
+        marginTop: 8,
+        fontSize: 15,
+        marginBottom: 24,
+        color: '#737380',
+    },
+
+    detailsButton: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+
+    detailsButtonText: {
+        color: '#e02041',
+        fontSize: 15,
+        fontWeight: 'bold',
+    },
+});
+```
+Importing the StyleSheet from the react-native folder (always necessary to use the styles on the app's screens).
+Importing the constants.<br/>
+Exporting styles creation.<br/>
+Adding paddingTop in the constants for the content of the screen to be below the cell status bar.<br/>
+Organizing, aligning and defining the size, alignment, font and margin of the main container and the elements of the header.<br/>
+Stylizing the list and the incidents on the list and finally aligning the buttons and styling their content.
+
+### The result of this screen's code:
+
+![appScreenIncidents](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/expoIncidents1.jpg "appScreenIncidents")
+
+## Detail
+
+### Index.js
+```
+import React from 'react';
+import { Feather } from '@expo/vector-icons';
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { View, Text, Image, TouchableOpacity, Linking } from 'react-native';
+import * as MailComposer from 'expo-mail-composer';
+
+import logoImg from '../../assets/logo.png'
+import styles from './styles';
+
+
+export default function Detail() {
+
+    const navigation = useNavigation();
+    const route = useRoute();
+
+    const incident = route.params.incident;
+
+    const message = `Olá ${incident.name}, estou entrando em contato pois quero de ajudar no caso "${incident.title}" com o valor de ${Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(incident.value)}.`
+
+    function navigateBack(){
+        navigation.goBack()
+    }
+
+    function sendEmail() {
+        MailComposer.composeAsync({
+            subject: `Herói do caso: ${incident.title}`,
+            recipients: [incident.email],
+            body: message,
+        })
+    }
+
+    function sendWhatsapp() {
+        Linking.openURL(`whatsapp://send?phone=${incident.whatsapp}&text=${message}`);
+    }
+
+    return (
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <Image source={logoImg}/>
+                
+                <TouchableOpacity onPress={navigateBack}>
+                    <Feather name="arrow-left" size={28} color="#e02041"/>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.incident}>
+                <Text style={[styles.incidentProperty, { marginTop: 0 }]}>ONG:</Text>
+                <Text style={styles.incidentValue}>{incident.name} de {incident.city}/{incident.uf}</Text>
+
+                <Text style={styles.incidentProperty}>CASO:</Text>
+                <Text style={styles.incidentValue}>{incident.title}</Text>
+
+                <Text style={styles.incidentProperty}>VALOR:</Text>
+                <Text style={styles.incidentValue}>
+                            {Intl.NumberFormat('pt-BR', {
+                             style: 'currency', 
+                             currency: 'BRL' })
+                             .format(incident.value)}
+                </Text>
+            </View>
+
+            <View style={styles.contactBox}>
+                <Text style={styles.heroTitle1}>Salve o dia!</Text>
+                <Text style={styles.heroTitle2}>Seja o herói desse caso.</Text>
+
+                <Text style={styles.heroDescription}>Entre em contato:</Text>
+
+                <View style={styles.actions}> 
+                    <TouchableOpacity style={styles.action} onPress={sendWhatsapp}>
+                        <Text style={styles.actionText}>Whatsapp</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity style={styles.action} onPress={sendEmail}>
+                        <Text style={styles.actionText}>E-mail</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+
+            
+        </View>
+    );
+}
+```
+Importing React.<br/>
+Importing the icons.<br/>
+Importing navigation and useRoute.<br/>
+Importing the elements used on the screen such as View, Text, Image, TouchableOpacity and Linking.<br/>
+Importing the logo and styles.<br/>
+Exporting the function that returns the details of the incidents.<br/>
+Assigning useNavigation and useRoute to variables.<br/>
+Assigning the incident parameters in a variable.<br/>
+Creating a constant message with the name of the NGO, the title of the incident and the amount that will be donated.<br/>
+Function that navigates to the previous screen.<br/>
+Function that uses MailComposer to open the mobile email app and send an email with the message created to the NGO about the respective incident.<br/>
+Function that sends the message created by directly opening the NGO number on the user's whatsapp.<br/>
+Returning elements from the incident details page.<br/>
+Creating a view that contains all the elements of the screen.<br/>
+Creating a view that contains the logo and a button that when activated activates the function of returning to the previous page.<br/>
+Creating a view that shows the details of the incident with the name of the NGO, city and UF, the title of the incident and the amount formatted in Brazilian currency.<br/>
+Finally, some texts about contacting the NGO and below are two buttons, the first activates the function that sends the message via whatsapp and the other activates the function that sends the message by email to the NGO.<br/>
+
+### Styles.js
+```
+import { StyleSheet } from 'react-native';
+import Constants from 'expo-constants';
+
+export default StyleSheet.create({
+    container: {
+        flex: 1,
+        paddingHorizontal: 24,
+        paddingTop: Constants.statusBarHeight + 20,
+    },
+
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+    },
+
+    incident: {
+        padding: 24,
+        borderRadius: 8,
+        backgroundColor: '#FFF',
+        marginBottom: 16,
+        marginTop: 48,
+    },
+
+    incidentProperty: {
+        fontSize: 14,
+        color: '#41414d',
+        fontWeight: 'bold',
+        marginTop: 24,
+    },
+
+    incidentValue: {
+        marginTop: 8,
+        fontSize: 15,
+
+        color: '#737380',
+    },
+
+    contactBox: {
+        padding: 24,
+        borderRadius: 8,
+        backgroundColor: '#FFF',
+        marginBottom: 16,
+    },
+
+    heroTitle1: {
+        fontWeight: 'bold',
+        fontSize: 20,
+        color: '#13131a',
+        lineHeight: 30,
+    },
+
+    heroTitle2: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        color: '#13131a',
+        lineHeight: 30,
+    },
+
+    heroDescription: {
+        fontSize: 15,
+        color: '#737380',
+        marginTop: 16,   
+    },
+
+    actions: {
+        marginTop: 16,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+
+    action: {
+        backgroundColor: '#e02041',
+        borderRadius: 8,
+        height: 50,
+        width: '48%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    actionText: {
+        color: '#fff',
+        fontSize: 15,
+        fontWeight: 'bold',
+    }
+});
+```
+
+Importing react-native's StyleSheet.<br/>
+Importing the expo constants.<br/>
+Exporting the function that creates the screen styles.<br/>
+Organizing the main container of the screen.<br/>
+Adding paddingTop in the constants for the content of the screen to be below the cell status bar.<br/>
+Aligning the header elements.<br/>
+Organizing and styling the elements of the incident, such as its title, property and value.<br/>
+Organizing and styling the contact box, defining the style of the texts and the two buttons and aligning them in the middle and placing them next to each other.
+
+
+### The result of this screen's code:
+
+![appScreenDetails](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/expoDetails1.jpg  "appScreenDetails")
