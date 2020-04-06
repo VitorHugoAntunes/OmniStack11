@@ -1170,7 +1170,9 @@ Defining the width and size of the form and the inputs and textareas.
 # Mobile
 
 The project was created by running `expo init mobile` (Need the expo already installed globally: `npm install -g expo-cli`).<br/>
-The blank template was chosen when creating the project.
+The blank template was chosen when creating the project.<br/>
+To run the project, use `expo start` or `yarn start` and connect your phone via QR Code or USB, you must have installed the expo app on your phone (it is also possible to use emulators).
+
 
 ### Installed packages, frameworks and dependencies :
 
