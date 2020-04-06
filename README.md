@@ -1845,6 +1845,7 @@ In the example below, the Email field was sent incorrectly and a message was sen
 <div align="center">
 	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/integrationTestError.PNG" alt="integrationTestError"/>
 </div>
+<br/>
 
 If everything is sent correctly, the function passes the test.
 
@@ -1872,7 +1873,7 @@ Changing the ID size to 7, we get an error, because 7 was expected and the funct
 <div align="center">
 	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestError.PNG" alt="unitTestError"/>
 </div>
-
+<br/>
 If everything goes perfectly, both tests pass and we don't get any errors.
 
 <div align="center">
