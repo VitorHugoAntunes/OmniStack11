@@ -1725,3 +1725,146 @@ Organizing and styling the contact box, defining the style of the texts and the 
 <div align="center">
 	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/expoDetails1.jpg" alt="appScreenDetails"/>
 </div>
+
+<a name="Tests"><a/>
+	
+# Tests
+
+The tests were performed on the back-end routes, the creation of NGOs in the database and the creation of the unique key for the registration of NGOs. <br/>
+Tests consist of field validation, integration tests and unit tests.
+
+### Installed packages, frameworks and dependencies :
+
+- **Celebrate**;
+- **Jest**;
+- **Cross-env**;
+- **Supertest**.
+
+## Package.json
+
+```
+"scripts": {
+	"start":  "nodemon src/server.js",
+	"test":  "cross-env NODE_ENV=test jest"
+},
+```
+The test script was changed, creating a variable to perform the tests.
+
+## Routes.js
+```
+const { celebrate, Segments, Joi } =  require('celebrate');
+
+routes.post('/ongs', celebrate({
+    [Segments.BODY]: Joi.object().keys({
+        name: Joi.string().required(),
+        email: Joi.string().required().email(),
+        whatsapp: Joi.string().required().min(10).max(11),
+        city: Joi.string().required(),
+        uf: Joi.string().required().length(2),
+    })
+}), OngController.create);
+
+routes.get('/profile', celebrate({
+    [Segments.HEADERS]: Joi.object({
+        authorization: Joi.string().required(),
+    }).unknown(),
+}), ProfileController.index);
+
+routes.get('/incidents', celebrate({
+    [Segments.QUERY]: Joi.object().keys({
+        page: Joi.number(),
+    })
+}),IncidentController.index);
+
+routes.delete('/incidents/:id', celebrate({
+    [Segments.PARAMS]: Joi.object().keys({
+        id: Joi.number().required(),
+    })
+}), IncidentController.delete);
+```
+Before, only the creation of the routes was mentioned, now explaining the validation of the routes.<br/>
+Celebrate, segments and Joi were imported from the celebrate folder.<br/>
+On the NGO route, the segments are being used to get the attributes of the request body, Joi is checking all the fields that are sent in the body.<br/>
+In the Name field, it is being checked if it is a String and making the field required.<br/>
+In the Email field, it is being checked if it is a String, making the field required and making a field in the email format.<br/>
+In the Whatsapp field, it is being checked if it is a String, making the field required and assigning the minimum (10) and maximum (11) characters.<br/>
+In the City field it is being checked if it is a String and making the field required.<br/>
+In the field Uf it is being checked if it is a String and making the field required and setting the length to two characters.<br/>
+In Profile routes, validating the headers by checking if there is an authorization, and if it is a String and making it a requirement, unknown is used to verify only the authorization and the other headers are discarded in the validation.<br/>
+In the Incidents route, it is checked if the page is being passed as a number in the query.<br/>
+In the Incidents /: id route, parameters are checked to validate that the Id is a number and is required to delete the incident.<br/>
+If they are not validated, Bad Request is returned.
+
+For example:
+
+![celebrateValidation](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/celebrateValidation.PNG "celebrateValidation") 
+
+## Ong.spec.js (integration)
+```
+const request = require('supertest');
+const app = require('../../src/app');
+const connection = require('../../src/database/connection');
+
+describe('ONG', () => {
+
+    beforeEach(async () => {  
+        await connection.migrate.rollback();
+        await connection.migrate.latest();
+    });
+
+    afterAll(async () => {
+       await connection.destroy();
+    });
+
+    it('should be able to create a new ONG', async () => {
+        const response = await request(app)
+            .post('/ongs')
+            .send({
+                name: "Greenpeace",
+                email: "contato@com.br",
+                whatsapp: "11999999999",
+                city: "Mauá",
+                uf: "SP"
+            });
+    expect(response.body).toHaveProperty('id');    
+        expect(response.body.id).toHaveLength(8);
+    });
+});
+```
+Importing the supertest, app and the connection to the database.<br/>
+A function has been created to describe what should happen in the test and follow some instructions.<br/>
+It was configured that before each test, the NGO table in the test database is deleted and a new one is created.<br/>
+And after all the tests the connection is destroyed.<br/>
+In the test, a new NGO is created on the NGO route and the data for each field is sent, all fields must follow the validation previously proposed with `celebrate`.<br/>
+It is expected from the test that the NGO created has the property ID and that ID has 8 characters.<br/>
+If you send some of the fields incorrectly, the creation of the NGO does not pass the test.<br/>
+In the example below, the Email field was sent incorrectly and a message was sent saying that the email must be valid, and as it was not possible to create the NGO, it did not obtain the ID that was expected in the test, generating another error.
+
+![integrationTestError](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/integrationTestError.PNG "integrationTestError") 
+
+If everything is sent correctly, the function passes the test.
+
+![integrationTestPass](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/integrationTestPass.PNG "integrationTestPass")
+
+## GenerateUniqueId.spec.js (unit)
+
+```
+const generateUniqueId = require('../../src/utils/generateUniqueId');
+
+describe('Generate Unique Id', () => {
+    it('should generate an unique ID', () => {
+        const id = generateUniqueId();
+        
+        expect(id).toHaveLength(8);
+    });
+});
+```
+The function that creates the unique ID was imported.<br/>
+In this test it was described that the function must create a unique ID, and the ID is expected to have 8 characters.<br/>
+Changing the ID size to 7, we get an error, because 7 was expected and the function generates an ID with 8 characters, and in the terminal we receive the details of what happened.
+
+![unitTestError](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestError.PNG "unitTestError")
+
+If everything goes perfectly, both tests pass and we don't get any errors.
+
+![unitTestError](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestPass.PNG "unitTestPass")
