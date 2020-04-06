@@ -1842,11 +1842,15 @@ It is expected from the test that the NGO created has the property ID and that I
 If you send some of the fields incorrectly, the creation of the NGO does not pass the test.<br/>
 In the example below, the Email field was sent incorrectly and a message was sent saying that the email must be valid, and as it was not possible to create the NGO, it did not obtain the ID that was expected in the test, generating another error.
 
-![integrationTestError](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/integrationTestError.PNG "integrationTestError") 
+<div align="center">
+	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/integrationTestError.PNG" alt="integrationTestError"/>
+</div>
 
 If everything is sent correctly, the function passes the test.
 
-![integrationTestPass](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/integrationTestPass.PNG "integrationTestPass")
+<div align="center">
+	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/integrationTestPass.PNG " alt="integrationTestPass"/>
+</div>
 
 ## GenerateUniqueId.spec.js (unit)
 
@@ -1865,8 +1869,12 @@ The function that creates the unique ID was imported.<br/>
 In this test it was described that the function must create a unique ID, and the ID is expected to have 8 characters.<br/>
 Changing the ID size to 7, we get an error, because 7 was expected and the function generates an ID with 8 characters, and in the terminal we receive the details of what happened.
 
-![unitTestError](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestError.PNG "unitTestError")
+<div align="center">
+	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestError.PNG" alt="unitTestError"/>
+</div>
 
 If everything goes perfectly, both tests pass and we don't get any errors.
 
-![unitTestError](https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestPass.PNG "unitTestPass")
+<div align="center">
+	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestPass.PNG" alt="unitTestPass"/>
+</div>
