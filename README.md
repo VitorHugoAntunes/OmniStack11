@@ -1874,7 +1874,7 @@ Changing the ID size to 7, we get an error, because 7 was expected and the funct
 	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestError.PNG" alt="unitTestError"/>
 </div>
 <br/>
-If everything goes perfectly, both tests pass and we don't get any errors.
+If everything goes perfectly, both tests pass and we don't get any errors.<br/>
 
 <div align="center">
 	<img align="center" src="https://github.com/VitorHugoAntunes/OmniStack11/blob/master/images/unitTestPass.PNG" alt="unitTestPass"/>
